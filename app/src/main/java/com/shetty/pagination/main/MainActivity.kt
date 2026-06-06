@@ -13,11 +13,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.shetty.pagination.ui.BusinessItem
+import com.shetty.pagination.ui.DetailScreen
 import dagger.hilt.android.AndroidEntryPoint
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.util.Locale
 
 @AndroidEntryPoint
@@ -33,7 +41,44 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MainScreen(mainViewModel)
+                    val navController = rememberNavController()
+                    
+                    NavHost(navController = navController, startDestination = "list") {
+                        composable("list") {
+                            MainScreen(
+                                viewModel = mainViewModel,
+                                onNavigateToDetail = { name, imageUrl, address, isOpen, phone ->
+                                    val encodedUrl = URLEncoder.encode(imageUrl, StandardCharsets.UTF_8.toString())
+                                    val encodedPhone = URLEncoder.encode(phone, StandardCharsets.UTF_8.toString())
+                                    navController.navigate("detail/$name/$encodedUrl/$address/$isOpen/$encodedPhone")
+                                }
+                            )
+                        }
+                        composable(
+                            route = "detail/{name}/{imageUrl}/{address}/{isOpen}/{phone}",
+                            arguments = listOf(
+                                navArgument("name") { type = NavType.StringType },
+                                navArgument("imageUrl") { type = NavType.StringType },
+                                navArgument("address") { type = NavType.StringType },
+                                navArgument("isOpen") { type = NavType.BoolType },
+                                navArgument("phone") { type = NavType.StringType }
+                            )
+                        ) { backStackEntry ->
+                            val name = backStackEntry.arguments?.getString("name") ?: ""
+                            val imageUrl = backStackEntry.arguments?.getString("imageUrl") ?: ""
+                            val address = backStackEntry.arguments?.getString("address") ?: ""
+                            val isOpen = backStackEntry.arguments?.getBoolean("isOpen") ?: false
+                            val phone = backStackEntry.arguments?.getString("phone") ?: ""
+                            DetailScreen(
+                                name = name,
+                                imageUrl = imageUrl,
+                                address = address,
+                                isOpen = isOpen,
+                                phone = phone,
+                                onBack = { navController.popBackStack() }
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -41,7 +86,10 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MainScreen(viewModel: MainViewModel) {
+fun MainScreen(
+    viewModel: MainViewModel,
+    onNavigateToDetail: (String, String, String, Boolean, String) -> Unit
+) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     
     // sliderValue updates immediately as the user drags for UI feedback
@@ -76,7 +124,18 @@ fun MainScreen(viewModel: MainViewModel) {
             ) { index ->
                 val business = pagingItems[index]
                 if (business != null) {
-                    BusinessItem(business = business)
+                    BusinessItem(
+                        business = business,
+                        onClick = {
+                            onNavigateToDetail(
+                                business.name ?: "Unknown",
+                                business.imageUrl ?: "",
+                                business.location?.displayAddress?.joinToString(", ") ?: "No Address",
+                                business.isClosed == false,
+                                business.displayPhone ?: ""
+                            )
+                        }
+                    )
                     HorizontalDivider()
                 }
             }

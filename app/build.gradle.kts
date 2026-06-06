@@ -29,7 +29,7 @@ android {
         buildConfigField(
             "String",
             "AUTH_TOKEN",
-            "\"YOUR_YELP_TOKEN\""
+            "\"A_y-QGO1cJ4ByvzBC7nHL-iDvJCU-1Rj2cr22pps8SnKxthAb_a46mHSh6DAlU9LsgA48CkqfSGCXY7BJPaDMg2MXPhjY_MTT1ulvex8YxVKhNZIzCwkoBwL21kjanYx\""
         )
         buildFeatures.buildConfig = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

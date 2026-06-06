@@ -1,5 +1,6 @@
 package com.shetty.pagination.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,10 +17,14 @@ import com.shetty.pagination.models.Businesses
 import com.shetty.pagination.utils.Constants
 
 @Composable
-fun BusinessItem(business: Businesses) {
+fun BusinessItem(
+    business: Businesses,
+    onClick: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable(onClick = onClick)
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

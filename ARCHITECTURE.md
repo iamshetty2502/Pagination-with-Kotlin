@@ -20,15 +20,18 @@ This project implements a robust and scalable architecture based on **MVVM (Mode
 
 ## Design Flow
 
-The application follows a predictable, unidirectional data flow (UDF):
+The application follows a predictable, unidirectional data flow (UDF) inspired by MVI (Model-View-Intent):
 
-1.  **User Action**: The user interacts with the UI (e.g., scrolling, clicking a restaurant, or adjusting search radius).
-2.  **Event (Intent)**: The UI triggers an event in the `ViewModel`.
-3.  **Business Logic**: The ViewModel processes the event and, if data is needed, requests it from the `Repository`.
-4.  **Pagination Coordination**: The `Pager` uses the `RemoteMediator` to check the local database. If more data is needed, it triggers a network call.
-5.  **Data Synchronization**: **Retrofit** fetches the data, and it is immediately cached in the **Room Database**.
-6.  **Observation**: The UI observes a `Flow<PagingData>` directly from the database.
-7.  **Recomposition**: As the database updates, the `Flow` emits new data, and **Jetpack Compose** re-renders the UI to reflect the changes.
+1.  **App Start (Splash)**: The application starts with a `SplashScreen`, which is displayed for 2 seconds.
+2.  **Authentication (Login)**: After the splash, the user is navigated to the `LoginScreen`. Users can "log in" via traditional credentials or social mechanisms (Google/Facebook). For now, this is a visual implementation without functional validation.
+3.  **User Action (Main)**: Once logged in, the user reaches the `MainScreen` where they can scroll the list or adjust the search radius.
+4.  **Event (Intent)**: The UI sends a specific `MainEvent` to the `MainViewModel`.
+5.  **Business Logic**: The ViewModel processes the event. If new data is required, it triggers the Repository.
+6.  **Pagination Request**: The Repository uses the `Pager` and `RemoteMediator` to decide if a network call is needed.
+7.  **Data Sync**: If required, **Retrofit** fetches data from the API and saves it into the **Room Database**.
+8.  **Observation**: The **Room Database** acts as the single source of truth; the UI observes the database changes via a `Flow`.
+9.  **State Update**: The ViewModel emits a new `MainUiState`.
+10. **Recomposition**: **Jetpack Compose** observes the state and re-renders only the necessary parts of the screen.
 
 ## Data Flow (Offline-First)
 1. The **ViewModel** requests a `Flow<PagingData>` from the **Repository**.

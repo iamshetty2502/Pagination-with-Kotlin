@@ -23,6 +23,8 @@ import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.shetty.pagination.ui.BusinessItem
 import com.shetty.pagination.ui.DetailScreen
+import com.shetty.pagination.ui.LoginScreen
+import com.shetty.pagination.ui.SplashScreen
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
 
@@ -41,7 +43,21 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberNavController()
                     
-                    NavHost(navController = navController, startDestination = "list") {
+                    NavHost(navController = navController, startDestination = "splash") {
+                        composable("splash") {
+                            SplashScreen(onTimeout = {
+                                navController.navigate("login") {
+                                    popUpTo("splash") { inclusive = true }
+                                }
+                            })
+                        }
+                        composable("login") {
+                            LoginScreen(onLoginSuccess = {
+                                navController.navigate("list") {
+                                    popUpTo("login") { inclusive = true }
+                                }
+                            })
+                        }
                         composable("list") {
                             MainScreen(
                                 viewModel = mainViewModel,

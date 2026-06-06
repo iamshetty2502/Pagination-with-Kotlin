@@ -61,15 +61,14 @@ fun DetailScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    if (isOpen) {
-                        Box(
-                            modifier = Modifier
-                                .size(12.dp)
-                                .clip(CircleShape)
-                                .background(Color.Green)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                    }
+                    Box(
+                        modifier = Modifier
+                            .size(12.dp)
+                            .clip(CircleShape)
+                            .background(if (isOpen) Color.Green else Color.Red)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+
                     Text(
                         text = name,
                         fontSize = 24.sp,

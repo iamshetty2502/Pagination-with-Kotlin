@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.shetty.pagination.models.Businesses
+import com.shetty.pagination.db.RestaurantEntity
 import com.shetty.pagination.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -27,7 +27,7 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
         }
     }
 
-    fun getRestaurantsInProvidedRadius(radius: Int): Flow<PagingData<Businesses>> {
+    fun getRestaurantsInProvidedRadius(radius: Int): Flow<PagingData<RestaurantEntity>> {
         return repository.getNearbyRestaurants(radius).cachedIn(viewModelScope)
     }
 }

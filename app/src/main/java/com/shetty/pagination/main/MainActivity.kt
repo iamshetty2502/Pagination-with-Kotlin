@@ -119,7 +119,7 @@ fun MainScreen(
         ) {
             items(
                 count = pagingItems.itemCount,
-                key = pagingItems.itemKey { it.id ?: "" },
+                key = pagingItems.itemKey { it.id },
                 contentType = pagingItems.itemContentType { "business" }
             ) { index ->
                 val business = pagingItems[index]
@@ -128,11 +128,11 @@ fun MainScreen(
                         business = business,
                         onClick = {
                             onNavigateToDetail(
-                                business.name ?: "Unknown",
-                                business.imageUrl ?: "",
-                                business.location?.displayAddress?.joinToString(", ") ?: "No Address",
-                                business.isClosed == false,
-                                business.displayPhone ?: ""
+                                business.name,
+                                business.imageUrl,
+                                business.address,
+                                business.isOpen,
+                                business.phone
                             )
                         }
                     )

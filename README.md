@@ -36,5 +36,10 @@ The app uses the **Yelp Fusion API**. To run the project:
 buildConfigField("String", "AUTH_TOKEN", "\"YOUR_ACTUAL_API_KEY\"")
 ```
 
+## 📚 Documentation
+For a detailed look at how this project is built, please refer to:
+- [Architecture & Design Flow](ARCHITECTURE.md)
+- [Technology Stack & Implementation](TECH_STACK.md)
+
 ## Credits
 Inspired by the pagination tutorials from [CheezyCode](https://www.youtube.com/@CheezyCode).

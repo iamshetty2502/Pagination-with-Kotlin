@@ -24,8 +24,6 @@ import androidx.paging.compose.itemKey
 import com.shetty.pagination.ui.BusinessItem
 import com.shetty.pagination.ui.DetailScreen
 import dagger.hilt.android.AndroidEntryPoint
-import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
 import java.util.Locale
 
 @AndroidEntryPoint
@@ -47,34 +45,18 @@ class MainActivity : ComponentActivity() {
                         composable("list") {
                             MainScreen(
                                 viewModel = mainViewModel,
-                                onNavigateToDetail = { name, imageUrl, address, isOpen, phone ->
-                                    val encodedUrl = URLEncoder.encode(imageUrl, StandardCharsets.UTF_8.toString())
-                                    val encodedPhone = URLEncoder.encode(phone, StandardCharsets.UTF_8.toString())
-                                    navController.navigate("detail/$name/$encodedUrl/$address/$isOpen/$encodedPhone")
+                                onNavigateToDetail = { id ->
+                                    navController.navigate("detail/$id")
                                 }
                             )
                         }
                         composable(
-                            route = "detail/{name}/{imageUrl}/{address}/{isOpen}/{phone}",
+                            route = "detail/{id}",
                             arguments = listOf(
-                                navArgument("name") { type = NavType.StringType },
-                                navArgument("imageUrl") { type = NavType.StringType },
-                                navArgument("address") { type = NavType.StringType },
-                                navArgument("isOpen") { type = NavType.BoolType },
-                                navArgument("phone") { type = NavType.StringType }
+                                navArgument("id") { type = NavType.StringType }
                             )
-                        ) { backStackEntry ->
-                            val name = backStackEntry.arguments?.getString("name") ?: ""
-                            val imageUrl = backStackEntry.arguments?.getString("imageUrl") ?: ""
-                            val address = backStackEntry.arguments?.getString("address") ?: ""
-                            val isOpen = backStackEntry.arguments?.getBoolean("isOpen") ?: false
-                            val phone = backStackEntry.arguments?.getString("phone") ?: ""
+                        ) {
                             DetailScreen(
-                                name = name,
-                                imageUrl = imageUrl,
-                                address = address,
-                                isOpen = isOpen,
-                                phone = phone,
                                 onBack = { navController.popBackStack() }
                             )
                         }
@@ -88,11 +70,9 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainScreen(
     viewModel: MainViewModel,
-    onNavigateToDetail: (String, String, String, Boolean, String) -> Unit
+    onNavigateToDetail: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    
-    // sliderValue updates immediately as the user drags for UI feedback
     var sliderValue by remember { mutableFloatStateOf(0f) }
 
     val searchRadius = when (val state = uiState) {
@@ -127,13 +107,7 @@ fun MainScreen(
                     BusinessItem(
                         business = business,
                         onClick = {
-                            onNavigateToDetail(
-                                business.name,
-                                business.imageUrl,
-                                business.address,
-                                business.isOpen,
-                                business.phone
-                            )
+                            onNavigateToDetail(business.id)
                         }
                     )
                     HorizontalDivider()

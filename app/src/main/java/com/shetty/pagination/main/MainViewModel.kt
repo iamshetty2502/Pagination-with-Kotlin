@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.shetty.pagination.db.RestaurantEntity
-import com.shetty.pagination.repository.Repository
+import com.shetty.pagination.domain.model.Restaurant
+import com.shetty.pagination.domain.usecase.GetNearbyRestaurantsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +14,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
+class MainViewModel @Inject constructor(
+    private val getNearbyRestaurantsUseCase: GetNearbyRestaurantsUseCase
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow<MainUiState>(MainUiState.Success(radius = 0))
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
@@ -27,7 +29,7 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
         }
     }
 
-    fun getRestaurantsInProvidedRadius(radius: Int): Flow<PagingData<RestaurantEntity>> {
-        return repository.getNearbyRestaurants(radius).cachedIn(viewModelScope)
+    fun getRestaurantsInProvidedRadius(radius: Int): Flow<PagingData<Restaurant>> {
+        return getNearbyRestaurantsUseCase(radius).cachedIn(viewModelScope)
     }
 }

@@ -17,14 +17,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.shetty.pagination.R
-import com.shetty.pagination.db.RestaurantEntity
+import com.shetty.pagination.domain.model.Restaurant
 import com.shetty.pagination.utils.Constants
+import kotlin.math.abs
 
 @Composable
 fun BusinessItem(
-    business: RestaurantEntity,
+    business: Restaurant,
     onClick: () -> Unit
 ) {
+    val defaultImages = listOf(R.drawable.default_1, R.drawable.default_2, R.drawable.default_3)
+    val defaultImage = defaultImages[abs(business.id.hashCode()) % defaultImages.size]
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -33,13 +37,13 @@ fun BusinessItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
-            model = business.imageUrl,
+            model = if (business.imageUrl.isEmpty()) defaultImage else business.imageUrl,
             contentDescription = null,
             modifier = Modifier
                 .size(80.dp),
             contentScale = ContentScale.Crop,
-            placeholder = painterResource(R.drawable.ic_launcher_foreground),
-            error = painterResource(R.drawable.ic_launcher_foreground)
+            placeholder = painterResource(defaultImage),
+            error = painterResource(defaultImage)
         )
         Spacer(modifier = Modifier.width(16.dp))
         Column(

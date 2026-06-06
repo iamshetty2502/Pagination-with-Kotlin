@@ -14,6 +14,9 @@ interface RestaurantDao {
     @Query("SELECT * FROM restaurants WHERE radius = :radius ORDER BY page ASC")
     fun getRestaurantsByRadius(radius: Int): PagingSource<Int, RestaurantEntity>
 
+    @Query("SELECT * FROM restaurants WHERE id = :id")
+    suspend fun getRestaurantById(id: String): RestaurantEntity?
+
     @Query("DELETE FROM restaurants WHERE radius = :radius")
     suspend fun clearAllByRadius(radius: Int)
 }

@@ -17,8 +17,4 @@ interface INetwork {
         @Query("offset") offset: Int
     ): ResultData
 
-    @GET("/v3/businesses/{id}")
-    suspend fun getBusinessDetails(
-        @Path("id") id: String
-    ): Businesses
 }

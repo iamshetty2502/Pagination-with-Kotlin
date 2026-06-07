@@ -43,12 +43,12 @@ class RestaurantRemoteMediator(
 
         try {
             val response = iNetwork.getNearbyRestaurants(
-                Constants.sortBy,
-                Constants.location,
-                Constants.term,
-                Constants.limit,
+                Constants.SORT_BY,
+                Constants.LOCATION,
+                Constants.TERM,
+                Constants.LIMIT,
                 radius,
-                (page - 1) * Constants.limit
+                (page - 1) * Constants.LIMIT
             )
 
             val endOfPaginationReached = response.businesses.isEmpty()

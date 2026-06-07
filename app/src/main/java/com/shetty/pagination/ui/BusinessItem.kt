@@ -72,8 +72,8 @@ fun BusinessItem(
             }
             
             Text(
-                text = "${Constants.restaurantStatusMessage} ${
-                    if (!business.isOpen) Constants.closed else Constants.open
+                text = "${Constants.AVAILABILITY_STATUS} ${
+                    if (!business.isOpen) Constants.CURRENTLY_CLOSED else Constants.CURRENTLY_OPEN
                 }",
                 fontSize = 14.sp
             )

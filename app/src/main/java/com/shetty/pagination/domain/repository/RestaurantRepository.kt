@@ -6,5 +6,4 @@ import kotlinx.coroutines.flow.Flow
 
 interface RestaurantRepository {
     fun getNearbyRestaurants(radius: Int): Flow<PagingData<Restaurant>>
-    suspend fun getRestaurantById(id: String): Restaurant?
 }
